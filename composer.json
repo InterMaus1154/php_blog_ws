@@ -1,0 +1,12 @@
+{
+    "name": "amarc/php-blog",
+    "description": "Simple vanilla PHP blog site for demonstration.",
+    "type": "project",
+    "authors": [
+        {
+            "name": "intermaus1154",
+            "email": "amarco1154@gmail.com"
+        }
+    ],
+    "require": {}
+}
