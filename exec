@@ -1,0 +1,20 @@
+#!php
+<?php
+
+require_once __DIR__ . '/exec_handles.php';
+
+if(php_sapi_name() !== 'cli'){
+    die("This script must be run from the CLI \n");
+}
+
+$arg1 = $argv[1] ?? null;
+
+switch ($arg1){
+    case "dev":
+        handleDev($argc, $argv);
+        break;
+    default:
+        listCommands();
+        break;
+}
+
