@@ -2,7 +2,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 // load .env file
-$loadEnv = new \Core\LoadEnv(__DIR__ . '/.env');
+$loadEnv = new \Core\LoadEnv(__DIR__ . '/.en');
 $loadEnv->load();
 
 $host = getenv('DB_HOST');

@@ -2,18 +2,16 @@
 
 namespace Core;
 
-use http\Exception\RuntimeException;
-
-class LoadEnv
+final readonly class LoadEnv
 {
-    public function __construct(private readonly string $filePath)
+    public function __construct(private string $filePath)
     {
     }
 
     public function load(): void
     {
         if(!file_exists($this->filePath)){
-            throw new RuntimeException(".env file not found at specified path: $this->filePath");
+            throw new \Exception(".env file not found at specified path: $this->filePath");
         }
 
         // load file
