@@ -471,6 +471,11 @@ composer.lock
 *.css.map
 *.sass.map
 *.scss.map
+
+
+# environment files
+.env.*
+
 @johuder33
 nted
 on Oct 31, 2021
