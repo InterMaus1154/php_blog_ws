@@ -36,8 +36,7 @@ class Migrator
             echo "-----------------------\n";
             foreach ($files as $file) {
                 $start = microtime(true);
-
-                $migration = require_once $this->migrationFolder .'/'.$file;
+                $migration = require $this->migrationFolder .'/'.$file;
                 $className = $this->getClassNameFromFile($file);
                 echo "Running $className ....\n";
                 try{
@@ -45,12 +44,14 @@ class Migrator
                     $migration->up();
                     $end = microtime(true) - $start;
                     $end = number_format($end, 2);
-                    echo "$className migration successful - execution time: {$end}s";
+                    echo "$className migration successful - execution time: {$end}s\n";
+                    echo PHP_EOL;
                 }catch (\Exception $e){
                     echo "Migration failed for $className\n";
                     echo $e->getMessage();
                 }
             }
+            echo "Migration finished.";
         }else{
             throw new \Exception("Migration files not found");
         }
