@@ -13,6 +13,9 @@ switch ($arg1){
     case "dev":
         handleDev($argc, $argv);
         break;
+    case "migrate":
+        migrate();
+        break;
     default:
         listCommands();
         break;

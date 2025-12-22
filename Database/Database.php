@@ -63,9 +63,30 @@ class Database
         return $stmt->execute($params);
     }
 
+    public function beginTransaction(): void
+    {
+        $this->pdo->beginTransaction();
+    }
+
+    public function commit(): void
+    {
+        $this->pdo->commit();
+    }
+
+    public function rollback(): void
+    {
+        $this->pdo->rollBack();
+    }
+
+    public function getPDO(): \PDO
+    {
+        return $this->pdo;
+    }
+
     private function prepare($sql): false|\PDOStatement
     {
         return $this->pdo->prepare($sql);
     }
+
 
 }
