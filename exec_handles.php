@@ -38,9 +38,14 @@ function handleDev(int $argc, array $argv): void
  */
 function listCommands(): void
 {
+    echo PHP_EOL;
+
     echo "List of available commands:\n";
     echo "dev --> Runs dev server\n";
     echo "help --> Lists available commands\n";
+    echo "migrate --> Run database migrations\n";
+
+    echo PHP_EOL;
 }
 
 /**
@@ -52,10 +57,10 @@ function migrate(): void
     require_once __DIR__ . '/Database/Migration.php';
     require_once __DIR__ .'/Database/Migrator.php';
     require_once __DIR__ .'/Database/Database.php';
-    require_once __DIR__ . '/Core/LoadEnv.php';
+    require_once __DIR__ . '/Core/Env.php';
 
-    $loadEnv = new \Core\LoadEnv(__DIR__ . '/.env');
-    $loadEnv->load();
+    $loadEnv = new \Core\Env(__DIR__ . '/.env');
+    $loadEnv->loadFromFile();
 
     $host = getenv('DB_HOST');
     $username = getenv('DB_USER');
