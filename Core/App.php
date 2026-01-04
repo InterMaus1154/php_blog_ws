@@ -6,7 +6,7 @@ use Core\Env;
 use Database\Database;
 use PDO;
 
-class App
+class App implements Executable
 {
 
     private array $configs = [];
@@ -23,7 +23,7 @@ class App
 
     public static function getInstance(): App
     {
-        if(!isset(self::$instance)){
+        if (!isset(self::$instance)) {
             self::$instance = new self;
         }
         return self::$instance;
@@ -77,7 +77,7 @@ class App
     public static function loadMinimalApp(): App
     {
         require_once __DIR__ . '/Env.php';
-        require_once __DIR__ .'/../Database/Database.php';
+        require_once __DIR__ . '/../Database/Database.php';
 
         $app = new self;
         $app->env = $app->loadEnvFile();
@@ -86,11 +86,13 @@ class App
         return $app;
     }
 
-    public function builder(\Closure $builder): App{
+    public function builder(\Closure $builder): App
+    {
         $builder($this->services, $this);
         return $this;
     }
 
+    #[\Override]
     public function execute(): App
     {
 //        if(!isset($this->services['router'])){
@@ -101,5 +103,15 @@ class App
         return $this;
     }
 
+    public function get(string $serviceKey): mixed
+    {
+        return $this->services[$serviceKey];
+    }
+
+    public function set(string $serviceKey, mixed $serviceValue): mixed
+    {
+        $this->services[$serviceKey] = $serviceValue;
+        return $this->services[$serviceKey];
+    }
 
 }
