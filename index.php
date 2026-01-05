@@ -12,4 +12,4 @@ $app = App::getInstance()
     })
     ->execute();
 
-dd($app);
+dd(app('url')->query);

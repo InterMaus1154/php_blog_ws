@@ -9,7 +9,7 @@ class Url
 
     public readonly string $path;
     public readonly string $method;
-    public readonly array $query;
+    public readonly ?array $query;
     public readonly int $requestTimeUnix;
 
     public readonly \DateTime $requestDateTime;
@@ -18,7 +18,8 @@ class Url
     public function __construct()
     {
         $this->path = parse_url($_SERVER['REQUEST_URI'])['path'];
-        $this->query = explode('&', parse_url($_SERVER['REQUEST_URI'])['query']);
+        $this->query = isset(parse_url($_SERVER['REQUEST_URI'])['query']) ? explode('&', parse_url($_SERVER['REQUEST_URI'])['query']) : [];
+
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->requestTimeUnix = $_SERVER['REQUEST_TIME'];
         $this->requestDateTime = new \DateTime('@'.$_SERVER['REQUEST_TIME']);

@@ -6,14 +6,19 @@ class View implements Executable
 {
 
     private string $baseViewPath = __DIR__ . '/../App/Views';
+    private readonly string $fullViewPath;
+    private array $data;
 
     private function __construct(string $viewName, array $data = [])
     {
         list($exists, $fullPath) = $this->viewExists($viewName);
-        if(!$exists){
+        if (!$exists) {
             http_response_code(404);
             throw new \Exception(sprintf('File %s not found at specified path %s', $viewName, $fullPath));
         }
+
+        $this->fullViewPath = $fullPath;
+        $this->data = $data;
     }
 
 
@@ -38,5 +43,7 @@ class View implements Executable
     #[\Override]
     public function execute(): mixed
     {
+        extract($this->data);
+        return include $this->fullViewPath;
     }
 }
