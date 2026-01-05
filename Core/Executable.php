@@ -4,5 +4,5 @@ namespace Core;
 
 interface Executable
 {
-    public function execute(): mixed;
+    public function execute();
 }

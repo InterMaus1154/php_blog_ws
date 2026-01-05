@@ -3,6 +3,7 @@
 use Core\App;
 use Core\Url;
 use JetBrains\PhpStorm\NoReturn;
+use Core\View;
 
 if (!function_exists('dd')) {
     #[NoReturn]
@@ -48,20 +49,24 @@ if (!function_exists('url')) {
     }
 }
 
-if(!function_exists('app')){
+if (!function_exists('app')) {
     function app()
     {
         $app = App::getInstance();
-        if(func_num_args() === 0){
+        if (func_num_args() === 1) {
+            return $app->get(func_get_arg(0));
+        } else if (func_num_args() === 2) {
+            return $app->set(func_get_arg(0), func_get_arg(1));
+        } else {
             return $app;
         }
+    }
+}
 
-        if(func_num_args() === 1){
-            return $app->get(func_get_arg(0));
-        }
+if (!function_exists('view')) {
 
-        if(func_num_args() === 2){
-            return $app->set(func_get_arg(0), func_get_arg(1));
-        }
+    function view(string $view, array $data = []): View
+    {
+        return View::make($view, $data);
     }
 }

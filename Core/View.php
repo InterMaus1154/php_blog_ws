@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Exception;
+
 class View implements Executable
 {
 
@@ -9,12 +11,15 @@ class View implements Executable
     private readonly string $fullViewPath;
     private array $data;
 
+    /**
+     * @throws Exception
+     */
     private function __construct(string $viewName, array $data = [])
     {
         list($exists, $fullPath) = $this->viewExists($viewName);
         if (!$exists) {
             http_response_code(404);
-            throw new \Exception(sprintf('File %s not found at specified path %s', $viewName, $fullPath));
+            throw new Exception(sprintf('File %s not found at specified path %s', $viewName, $fullPath));
         }
 
         $this->fullViewPath = $fullPath;
@@ -22,6 +27,9 @@ class View implements Executable
     }
 
 
+    /**
+     * @throws Exception
+     */
     public static function make(string $viewName, array $data = []): View
     {
         return new View($viewName, $data);
@@ -41,7 +49,7 @@ class View implements Executable
     }
 
     #[\Override]
-    public function execute(): mixed
+    public function execute()
     {
         extract($this->data);
         return include $this->fullViewPath;

@@ -92,15 +92,23 @@ class App implements Executable
         return $this;
     }
 
-    #[\Override]
-    public function execute(): App
+    public function beforeExecute(\Closure $actions): App
     {
-//        if(!isset($this->services['router'])){
-//            echo "No router found. Exiting...";
-//            exit(1);
-//        }
-
+        $actions($this);
         return $this;
+    }
+
+    #[\Override]
+    public function execute(): void
+    {
+        if(!isset($this->services['router'])){
+            echo "No router found. Exiting...";
+            exit(1);
+        }
+
+
+        $this->router->dumpRoutes();
+
     }
 
     public function get(string $serviceKey): mixed
