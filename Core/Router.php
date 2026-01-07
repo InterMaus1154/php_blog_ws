@@ -61,34 +61,45 @@ class Router
 
     public function dispatch(Url $url)
     {
-        if (!$this->hasRoute($url->method, $url->path)) {
+
+        if (!isset($this->routes[$url->method])) {
             http_response_code(404);
-            die("404: Page not exists!");
+            die("Invalid method for " . $url->path);
         }
 
-        $routeAction = $this->routes[$url->method][$url->path];
+        foreach ($this->routes[$url->method] as $route => $routeAction) {
+            $pattern = preg_replace("#\{\w+\}#", "([^\/]+)", $route);
 
-        if (is_array($routeAction)) {
-            list($class, $method) = $routeAction;
-            $obj = new $class();
-            $res = $obj->{$method}();
-        } else if (is_callable($routeAction)) {
-            $res = $routeAction();
-        } else {
-            die("Invalid route action method type.");
+            if (preg_match("#^$pattern$#", $url->path, $matches)) {
+
+                array_shift($matches);
+
+                if (is_array($routeAction)) {
+                    list($class, $method) = $routeAction;
+                    $obj = new $class();
+                    $res = $obj->{$method}(...array_values($matches));
+                } else if (is_callable($routeAction)) {
+                    $res = $routeAction(...array_values($matches));
+                } else {
+                    die("Invalid route action method type.");
+                }
+
+                if ($res instanceof Executable) {
+                    $res->execute();
+                    exit(0);
+                } else if (is_scalar($res)) {
+                    echo $res;
+                    exit(0);
+                } else {
+                    echo "Route action can only return Executable or callable" . PHP_EOL;
+                    echo "Found: " . gettype($res) . PHP_EOL;
+                    die;
+                }
+            }
         }
 
-        if ($res instanceof Executable) {
-            $res->execute();
-            exit(0);
-        } else if (is_scalar($res)) {
-            echo $res;
-            exit(0);
-        } else {
-            echo "Route action can only return Executable or callable" . PHP_EOL;
-            echo "Found: " . gettype($res) . PHP_EOL;
-            die;
-        }
+        http_response_code(404);
+        die("Page not found");
     }
 
 }

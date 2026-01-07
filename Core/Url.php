@@ -15,7 +15,9 @@ readonly class Url
 
     public function __construct()
     {
-        $this->path = parse_url($_SERVER['REQUEST_URI'])['path'];
+        $path = parse_url($_SERVER['REQUEST_URI'])['path'];
+        $this->path = $path === '/' ? '/' : rtrim($path, '/');
+
         $this->query = isset(parse_url($_SERVER['REQUEST_URI'])['query']) ? explode('&', parse_url($_SERVER['REQUEST_URI'])['query']) : [];
 
         $this->method = $_SERVER['REQUEST_METHOD'];
