@@ -1,7 +1,7 @@
 <?php
 use Core\Router;
 
-app('router')->buildRoutes(function(Router $router){
+app('service.router')->buildRoutes(function(Router $router){
     $router->get('/', function(){
         echo "hello world";
     });
@@ -11,3 +11,4 @@ app('router')->buildRoutes(function(Router $router){
     });
 
 });
+

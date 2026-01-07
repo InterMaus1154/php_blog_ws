@@ -5,24 +5,14 @@ namespace Core;
 class Router
 {
 
-    private static ?self $instance;
-
     private array $routes = [];
 
     private bool $routesLoaded = false;
 
-    private function __construct()
+    public function __construct()
     {
     }
 
-    public static function getInstance(): Router
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new Router();
-        }
-
-        return self::$instance;
-    }
 
     public function add(string $method, string $path, callable|array $action)
     {
@@ -59,12 +49,20 @@ class Router
 
     public function dumpRoutes()
     {
-        dump($this->routes);
+        foreach ($this->routes as $method => $path) {
+
+        }
     }
 
     public function hasRoute(string $method, string $path): bool
     {
         return isset($this->routes[$method][$path]);
+    }
+
+    public function dispatch(Url $url)
+    {
+        dump($url->query[0]);
+        dd($url->path);
     }
 
 }

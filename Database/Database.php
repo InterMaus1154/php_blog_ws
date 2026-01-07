@@ -5,7 +5,6 @@ namespace Database;
 class Database
 {
 
-    private static ?self $instance = null;
     private \PDO $pdo;
 
     /**
@@ -13,22 +12,10 @@ class Database
      */
     public static function init(string $dsn, string $username, string $password, array $options = []): self
     {
-        self::$instance = new Database($dsn, $username, $password, $options);
-        return self::getDBInstance();
+        return new Database($dsn, $username, $password, $options);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public static function getDBInstance(): self
-    {
-        if (is_null(self::$instance)) {
-            throw new \Exception('Database has not been initialised!');
-        }
-        return self::$instance;
-    }
-
-    private function __construct(string $dsn, string $username, string $password, array $options = [])
+    public function __construct(string $dsn, string $username, string $password, array $options = [])
     {
         try {
             $this->pdo = new \PDO(dsn: $dsn, username: $username, password: $password, options: $options);
@@ -39,9 +26,6 @@ class Database
         }
     }
 
-    private function __clone()
-    {
-    }
 
     public function all(string $sql, array $params = []): array
     {

@@ -35,4 +35,12 @@ final readonly class Env
     {
         return self::get($key);
     }
+
+    public function __set(string $key, mixed $value)
+    {
+        if(!is_scalar($value)){
+            throw new \InvalidArgumentException("Env value can only be scalar");
+        }
+        putenv("$key=$value");
+    }
 }

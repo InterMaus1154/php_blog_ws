@@ -5,8 +5,6 @@ namespace Core;
 class Url
 {
 
-    private static ?self $instance = null;
-
     public readonly string $path;
     public readonly string $method;
     public readonly ?array $query;
@@ -31,13 +29,5 @@ class Url
         return $this->path === $value;
     }
 
-    public static function getInstance(): Url
-    {
-        if(!isset(self::$instance)){
-            self::$instance = new Url();
-        }
-
-        return self::$instance;
-    }
 
 }
