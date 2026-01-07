@@ -1,13 +1,12 @@
 <?php
 use Core\Router;
+use App\Controllers\ViewController;
 
 app('service.router')->buildRoutes(function(Router $router){
-    $router->get('/', function(){
-        echo "hello world";
-    });
+    $router->get('/', [ViewController::class, 'index']);
 
-    $router->post('/login', function(){
-
+    $router->get('/about', function(){
+       return view('about', ['heading' => 'test']);
     });
 
 });

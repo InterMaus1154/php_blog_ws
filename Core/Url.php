@@ -2,16 +2,16 @@
 
 namespace Core;
 
-class Url
+readonly class Url
 {
 
-    public readonly string $path;
-    public readonly string $method;
-    public readonly ?array $query;
-    public readonly int $requestTimeUnix;
+    public string $path;
+    public string $method;
+    public ?array $query;
+    public int $requestTimeUnix;
 
-    public readonly \DateTime $requestDateTime;
-    public readonly ?string $previous;
+    public \DateTime $requestDateTime;
+    public ?string $previous;
 
     public function __construct()
     {

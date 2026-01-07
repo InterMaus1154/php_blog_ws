@@ -61,8 +61,34 @@ class Router
 
     public function dispatch(Url $url)
     {
-        dump($url->query[0]);
-        dd($url->path);
+        if (!$this->hasRoute($url->method, $url->path)) {
+            http_response_code(404);
+            die("404: Page not exists!");
+        }
+
+        $routeAction = $this->routes[$url->method][$url->path];
+
+        if (is_array($routeAction)) {
+            list($class, $method) = $routeAction;
+            $obj = new $class();
+            $res = $obj->{$method}();
+        } else if (is_callable($routeAction)) {
+            $res = $routeAction();
+        } else {
+            die("Invalid route action method type.");
+        }
+
+        if ($res instanceof Executable) {
+            $res->execute();
+            exit(0);
+        } else if (is_scalar($res)) {
+            echo $res;
+            exit(0);
+        } else {
+            echo "Route action can only return Executable or callable" . PHP_EOL;
+            echo "Found: " . gettype($res) . PHP_EOL;
+            die;
+        }
     }
 
 }
