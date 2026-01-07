@@ -16,7 +16,7 @@ class View implements Executable
      */
     private function __construct(string $viewName, array $data = [])
     {
-        list($exists, $fullPath) = $this->viewExists($viewName);
+        list($exists, $fullPath) = $this->buildViewPath($viewName);
         if (!$exists) {
             http_response_code(404);
             throw new Exception(sprintf('File %s not found at specified path %s', $viewName, $fullPath));
@@ -35,14 +35,19 @@ class View implements Executable
         return new View($viewName, $data);
     }
 
-    /**
-     * Determine if a view file exists or not
-     * @param string $viewName
-     * @return array
-     */
-    private function viewExists(string $viewName): array
+    private function buildViewPath(string $viewName): array
     {
-        $viewFullName = sprintf('%s.view.php', $viewName);
+        // convert {prefix}.{view} to {Prefix}/{view}
+        $parts = explode('.', $viewName);
+        $actualViewName = array_pop($parts);
+
+        // uppercase the view prefixes
+        $parts = array_map('ucfirst', $parts);
+
+        // join back the full name
+        $prefixedViewName = implode('/', $parts) . "/{$actualViewName}";
+
+        $viewFullName = sprintf('%s.view.php', $prefixedViewName);
         $fullPath = sprintf('%s/%s', $this->baseViewPath, $viewFullName);
 
         return [file_exists($fullPath), $fullPath];

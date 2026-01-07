@@ -2,10 +2,17 @@
 
 namespace App\Controllers;
 
+use Core\View;
+
 class PostController
 {
-    public function index()
+    public function index(): View
     {
-        return view('Posts/index');
+        return view('posts.index');
+    }
+
+    public function show(int $id): View
+    {
+        return view('posts.show', compact('id'));
     }
 }
