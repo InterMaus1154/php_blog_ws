@@ -15,19 +15,27 @@ class App implements Executable
     private array $services = [];
     private array $misc = [];
 
+    private bool $debugFlag = false;
+
     private static ?App $instance = null;
 
-    private const ENV_PATH = __DIR__ . "/../.env";
+    public const ENV_PATH = __DIR__ . "/../.env";
 
     private ?Closure $beforeExecutionActions = null;
+    private ?Closure $debugActions = null;
 
     private function __construct()
     {
-        $this->loadEnvFile();
+
     }
 
-    public function __get(string $name){}
-    public function __set(string $name, mixed $value){}
+    public function __get(string $name)
+    {
+    }
+
+    public function __set(string $name, mixed $value)
+    {
+    }
 
     public static function getInstance(): App
     {
@@ -37,55 +45,23 @@ class App implements Executable
         return self::$instance;
     }
 
-    public function loadEnvFile(): Env
-    {
-        $env = new Env(self::ENV_PATH);
-        $env->loadFromFile();
-        return $env;
-    }
 
-    public function loadDatabaseInstance(): Database
-    {
-        $host = Env::get('DB_HOST');
-        $username = Env::get('DB_USER');
-        $password = Env::get('DB_PASSWORD');
-        $port = Env::get('DB_PORT');
-        $db = Env::get('DB_NAME');
-        $charset = 'utf8mb4';
-        $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
-
-        return Database::init(dsn: $dsn, username: $username, password: $password, options: [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false
-        ]);
-    }
-
-    /**
-     * Creates an app instance with env variables loaded and with database
-     * @return App
-     */
-    public static function loadMinimalApp(): App
-    {
-        require_once __DIR__ . '/Env.php';
-        require_once __DIR__ . '/../Database/Database.php';
-
-        $app = new self;
-        $app->set('service.env', $app->loadEnvFile());
-        $app->set('service.db', $app->loadDatabaseInstance());
-
-        return $app;
-    }
-
-    public function builder(\Closure $builder): App
+    public function builder(Closure $builder): App
     {
         $builder($this);
         return $this;
     }
 
-    public function beforeExecute(\Closure $actions): App
+    public function beforeExecute(Closure $actions): App
     {
         $this->beforeExecutionActions = $actions;
+        return $this;
+    }
+
+    public function debugBeforeExecute(bool $debugFlag, Closure $actions): App
+    {
+        $this->debugFlag = $debugFlag;
+        $this->debugActions = $actions;
         return $this;
     }
 
@@ -96,9 +72,15 @@ class App implements Executable
             $this->beforeExecutionActions->call($this, $this);
         }
 
+
         if (!isset($this->services['router'])) {
             echo "No router found. Exiting...";
             exit(1);
+        }
+
+        if ($this->debugFlag && is_callable($this->debugActions)) {
+            $this->debugActions->call($this, $this);
+            exit(0);
         }
 
         $this->services['router']->dispatch($this->services['url']);
@@ -121,6 +103,11 @@ class App implements Executable
 
     public function set(string $serviceKey, mixed $serviceValue)
     {
+
+        if (is_callable($serviceValue)) {
+            $serviceValue = $serviceValue();
+        }
+
         if (str_contains($serviceKey, '.')) {
             list($identifier, $key) = explode('.', $serviceKey);
 

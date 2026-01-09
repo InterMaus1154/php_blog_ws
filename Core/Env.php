@@ -4,18 +4,18 @@ namespace Core;
 
 final readonly class Env
 {
-    public function __construct(private string $filePath)
+    public function __construct()
     {
     }
 
-    public function loadFromFile(): void
+    public function fromFile(string $filePath): Env
     {
-        if(!file_exists($this->filePath)){
-            return;
+        if(!file_exists($filePath)){
+            throw new \Exception(".env not found at $filePath");
         }
 
         // load file
-        $lines = file($this->filePath, FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
+        $lines = file($filePath, FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
         foreach ($lines as $line) {
             // ignore lines without =
             if(!str_contains($line, '=')) continue;
@@ -23,6 +23,7 @@ final readonly class Env
             list($key, $value) = explode('=', $line);
             $_ENV[$key] = $value;
         }
+        return $this;
     }
 
     public static function get(string $key, mixed $default = null): mixed
