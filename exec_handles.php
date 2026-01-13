@@ -59,7 +59,7 @@ function migrate(): void
     require_once __DIR__ .'/Database/Database.php';
     require_once __DIR__ . '/Core/Env.php';
 
-    $loadEnv = new \Core\Env(__DIR__ . '/.env');
+    $loadEnv = new \Core\Http\Env(__DIR__ . '/.env');
     $loadEnv->loadFromFile();
 
     $host = getenv('DB_HOST');
@@ -69,12 +69,12 @@ function migrate(): void
     $charset = 'utf8mb4';
     $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
-    \Database\Database::init(dsn: $dsn, username: $username, password: $password, options: [
+    \Core\Database\Database::init(dsn: $dsn, username: $username, password: $password, options: [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false
     ]);
 
-    $migrator = new \Database\Migrator();
+    $migrator = new \Core\Database\Migrator();
     $migrator->run();
 }

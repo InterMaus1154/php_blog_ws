@@ -1,12 +1,9 @@
 <?php
 
-namespace Core;
+namespace Core\App;
 
 use Closure;
-use Core\Env;
-use Database\Database;
 use mysql_xdevapi\Exception;
-use PDO;
 
 class App implements Executable
 {
@@ -105,7 +102,7 @@ class App implements Executable
     {
 
         if (is_callable($serviceValue)) {
-            $serviceValue = $serviceValue();
+            $serviceValue = $serviceValue($this);
         }
 
         if (str_contains($serviceKey, '.')) {

@@ -1,6 +1,9 @@
 <?php
 
-namespace Core;
+namespace Core\Routing;
+
+use Core\App\Executable;
+use Core\Http\Url;
 
 class Router
 {
@@ -47,11 +50,18 @@ class Router
 
     }
 
-    public function dumpRoutes()
+    public function dumpRoutes(): string
     {
-        foreach ($this->routes as $method => $path) {
-
+        $routes = "";
+        foreach ($this->routes as $method => $paths) {
+            $routes .= sprintf("%s:\n\t", $method);
+            foreach ($paths as $path => $action) {
+                $routes .= sprintf("- %s -> [%s: %s]\n\t", $path, $action[0], $action[1]);
+            }
+            $routes .= "\n\t";
         }
+
+        return $routes;
     }
 
     public function hasRoute(string $method, string $path): bool

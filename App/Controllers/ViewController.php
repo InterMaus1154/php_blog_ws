@@ -6,6 +6,7 @@ class ViewController
 {
     public function index()
     {
-        return view('index');
+        $users = db()->all('SELECT * FROM users');
+        return view('index', compact('users'));
     }
 }

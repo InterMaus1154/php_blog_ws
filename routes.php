@@ -1,8 +1,8 @@
 <?php
 
-use Core\Router;
-use App\Controllers\ViewController;
 use App\Controllers\PostController;
+use App\Controllers\ViewController;
+use Core\Routing\Router;
 
 app('service.router')->buildRoutes(function (Router $router) {
     $router->get('/', [ViewController::class, 'index']);

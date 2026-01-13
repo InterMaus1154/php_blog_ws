@@ -1,9 +1,10 @@
 <?php
 
-use Core\App;
-use Core\Url;
+use Core\App\App;
+use Core\Database\Database;
+use Core\Http\Url;
+use Core\Render\View;
 use JetBrains\PhpStorm\NoReturn;
-use Core\View;
 
 if (!function_exists('dd')) {
     #[NoReturn]
@@ -27,6 +28,20 @@ if (!function_exists('dump')) {
     }
 }
 
+if (!function_exists('app')) {
+    function app()
+    {
+        $app = App::getInstance();
+        if (func_num_args() === 1) {
+            return $app->get(func_get_arg(0));
+        } else if (func_num_args() === 2) {
+            return $app->set(func_get_arg(0), func_get_arg(1));
+        } else {
+            return $app;
+        }
+    }
+}
+
 if (!function_exists('urlIs')) {
     function urlIs(string $value): bool
     {
@@ -45,21 +60,14 @@ if (!function_exists('uri')) {
 if (!function_exists('url')) {
     function url(): Url
     {
-        return Url::getInstance();
+        return app('service.url');
     }
 }
 
-if (!function_exists('app')) {
-    function app()
+if (!function_exists('db')) {
+    function db(): Database
     {
-        $app = App::getInstance();
-        if (func_num_args() === 1) {
-            return $app->get(func_get_arg(0));
-        } else if (func_num_args() === 2) {
-            return $app->set(func_get_arg(0), func_get_arg(1));
-        } else {
-            return $app;
-        }
+        return app('service.db');
     }
 }
 

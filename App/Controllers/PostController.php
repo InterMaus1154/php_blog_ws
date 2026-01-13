@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use Core\View;
+use Core\Render\View;
 
 class PostController
 {

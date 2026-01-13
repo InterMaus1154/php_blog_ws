@@ -1,7 +1,8 @@
 <?php
 
-namespace Core;
+namespace Core\Render;
 
+use Core\App\Executable;
 use Exception;
 
 class View implements Executable

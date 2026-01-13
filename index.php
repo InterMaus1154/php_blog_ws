@@ -1,11 +1,11 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Core\App;
-use Core\Url;
-use Core\Router;
-use Core\Env;
-use Database\Database;
+use Core\App\App;
+use Core\Database\Database;
+use Core\Http\Env;
+use Core\Http\Url;
+use Core\Routing\Router;
 
 App::getInstance()
     ->builder(function (App $app) {
@@ -36,6 +36,6 @@ App::getInstance()
         $app->get('service.router')->loadRoutesFromFile();
     })
     ->debugBeforeExecute(false, function (App $app) {
-        dd(app('service.db'));
+        dd($app->get('service.router')->dumpRoutes());
     })
     ->execute();

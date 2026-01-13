@@ -2,7 +2,7 @@
 
 namespace Database\Migrations;
 
-use Database\Migration;
+use Core\Database\Migration;
 
 return new class extends Migration {
 
